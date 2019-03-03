@@ -1,7 +1,10 @@
+import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -73,7 +76,7 @@ public class Logic {
         do {
             cwu.showFutureExcercisesMenu();
             System.out.println("Wybierz jedna z opcji");
-            choice  = scanner.nextLine();
+            choice = scanner.nextLine();
             switch (choice) {
                 case "1":
                     showAllFutureExcercises(listaZadanDoWykonania);
@@ -85,6 +88,9 @@ public class Logic {
                     showExcercisesToDoIn7Days(listaZadanDoWykonania);
                     break;
                 case "4":
+                    showExcercisesToDoIncurrentWeek(listaZadanDoWykonania);
+                    break;
+                case "5":
                     showExcercisesToDoIn30Days(listaZadanDoWykonania);
                     break;
                 default:
@@ -92,6 +98,51 @@ public class Logic {
             }
         } while (!choice.equals(EXIT));
     }
+
+    void showExcercisesToDoIncurrentWeek(List<Excercise> listaZadanDoWykonania) {
+        List<Excercise> futureExcercises = excercisesToDoInCurrentWeek(listaZadanDoWykonania);
+        int i = 1;
+        for (Excercise o : futureExcercises) {
+            System.out.print(i + " .");
+            System.out.print(o);
+            i++;
+        }
+    }
+
+    List<Excercise> excercisesToDoInCurrentWeek(List<Excercise> listaZadanDoWykonania) {
+
+        LocalDate today = LocalDate.now();
+        LocalDate sunday = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
+        List<Excercise> list = new ArrayList<>();
+
+        for (Excercise ex : listaZadanDoWykonania) {
+
+            LocalDate exData = ex.getDatawykonania().toLocalDate();
+
+            if ((exData.isAfter(today) || exData.isEqual(today))
+                    && (exData.isBefore(sunday) || exData.isEqual(sunday)))
+                list.add(ex);
+
+        }
+        return list;
+
+
+
+
+//        List<Excercise> currentWeek = new ArrayList<>();
+//        for (Excercise ex : listaZadanDoWykonania) {
+//            LocalDate exData = ex.getDatawykonania().toLocalDate();
+//
+//            if (tc.currentWeekCondition(exData)){
+//                currentWeek.add(ex);
+//            }
+//        }
+//        return currentWeek;
+    }
+
+
+
+
 
     void showAllFutureExcercises(List<Excercise> listaZadanDoWykonania) {
         List<Excercise> futureExcercises = allFutureExcercises(listaZadanDoWykonania);
@@ -103,10 +154,10 @@ public class Logic {
         }
     }
 
-    List<Excercise> allFutureExcercises (List<Excercise> listaZadanDoWykonania) {
+    List<Excercise> allFutureExcercises(List<Excercise> listaZadanDoWykonania) {
         List<Excercise> futureExcercises = new ArrayList<>();
         for (Excercise ex : listaZadanDoWykonania) {
-            if (!tc.futureCondition(ex.getDatawykonania())) {
+            if (tc.futureCondition(ex.getDatawykonania())) {
                 futureExcercises.add(ex);
             }
         }
@@ -121,10 +172,10 @@ public class Logic {
             }
         }
         return futureExcercises;
-
     }
-    void showExcercisesToDoIn30Days(List<Excercise>listaZadanDoWykonania){
-        int i= 1;
+
+    void showExcercisesToDoIn30Days(List<Excercise> listaZadanDoWykonania) {
+        int i = 1;
         List<Excercise> futureExcercises = excercisesToDoIn30Days(listaZadanDoWykonania);
         for (Excercise ex : futureExcercises) {
             System.out.println(i + ". " + ex);
@@ -133,7 +184,7 @@ public class Logic {
 
     }
 
-   void showExcercisesToDoIn24Hours(List<Excercise> listaZadanDoWykonania) {
+    void showExcercisesToDoIn24Hours(List<Excercise> listaZadanDoWykonania) {
         int i = 1;
         List<Excercise> futureExcercises = excercisesToDoIn24Hours(listaZadanDoWykonania);
         for (Excercise ex : futureExcercises) {
@@ -162,8 +213,8 @@ public class Logic {
         return futureExcercises;
     }
 
-    void showExcercisesToDoIn7Days(List<Excercise>listaZadanDoWykonania){
-        int i= 1;
+    void showExcercisesToDoIn7Days(List<Excercise> listaZadanDoWykonania) {
+        int i = 1;
         List<Excercise> futureExcercises = excercisesToDoIn7Days(listaZadanDoWykonania);
         for (Excercise ex : futureExcercises) {
             System.out.println(i + ". " + ex);
@@ -171,7 +222,6 @@ public class Logic {
         }
 
     }
-
 
     List<Excercise> pastExcercises(List<Excercise> listaZadanDoWykonania) {
         List<Excercise> pastExcercises = new ArrayList<>();
@@ -207,7 +257,7 @@ public class Logic {
             }
             System.out.println("-------");
         }
-            excercisesMenu(listaZadanDoWykonania);
+        excercisesMenu(listaZadanDoWykonania);
     }
 
     LocalDateTime addDate(String data) {
@@ -250,11 +300,18 @@ public class Logic {
         return listaZadanDoWykonania;
     }
 
-    String chooseOne() {
-        String number = scanner.nextLine();
-        return number;
+    Excercise chooseExcercise(List<Excercise> listaZadanDoWykonania) {
+        System.out.println("Podaj numer");
+        int n = choiceNumber();
+        showAllExcercises(listaZadanDoWykonania);
+        return listaZadanDoWykonania.get(n);
     }
 
+    int choiceNumber() {
+        int n = scanner.nextInt();
+        scanner.nextLine();
+        return n - 1;
+    }
 
     List<Excercise> addExcercise(List<Excercise> listaZadanDoWykonania) {
         Excercise ex = new Excercise();

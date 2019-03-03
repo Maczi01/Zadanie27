@@ -18,8 +18,9 @@ public class CommunicationWithUser {
     static void showFutureExcercisesMenu() {
         System.out.println("1. Wyswietl wszystkie przyszle zadania");
         System.out.println("2. Wyswietl zadania do wykonania w ciagu 24 godzin");
-        System.out.println("3. Wyswietl zadania do wykonania w tym tygodniu");
-        System.out.println("4. Wyswietl zadania do wykonania w ciagu 30 dni");
+        System.out.println("3. Wyswietl zadania do wykonania w ciagu 7 dni");
+        System.out.println("4. Wyswietl zadania do konca bierzacego tygodnia");
+        System.out.println("5. Wyswietl zadania do wykonania w ciagu 30 dni");
         System.out.println("0. Powrot do menu glownego");
     }
 
