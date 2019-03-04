@@ -52,8 +52,7 @@ public class TimeConditions {
         LocalDate today = LocalDate.now();
         LocalDate sunday = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
             if ((dOne.isAfter(today) || dOne.isEqual(today))
-                &&
-        (dOne.isBefore(sunday) || dOne.isEqual(sunday))) {
+                    && (dOne.isBefore(sunday) || dOne.isEqual(sunday))) {
             return true;
         }
         else
